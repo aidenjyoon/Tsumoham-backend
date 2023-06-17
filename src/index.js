@@ -47,9 +47,14 @@ passport.use(
   })
 );
 
+app.get("/auth/twitch", passport.authenticate("twitch"));
+
 app.get(
-  "/auth/twitch",
-  passport.authenticate("twitch", { scope: ["user:email"] })
+  "/auth/twitch/callback",
+  passport.authenticate("twitch", { failureRedirect: "/login" }),
+  function (req, res) {
+    res.redirect("localhost:3000");
+  }
 );
 
 app.get("/", (req, res) => {
