@@ -5,8 +5,6 @@ import cors from "cors";
 import session from "express-session";
 import passport from "passport";
 
-const TwitchStrategy = require("passport-twitch-new").Strategy;
-
 dotenv.config();
 
 const app = express();
@@ -38,31 +36,13 @@ app.use(
 app.use(passport.initialize());
 app.use(passport.session());
 
-passport.use(
-  new TwitchStrategy({
-    clientId: process.env.TWITCH_CLIENT_ID,
-    clientSecret: process.env.TWITCH_CLIENT_SECRET,
-    callbackURL: "/auth/twitch/callback",
-    scope: "user_read",
-  })
-);
-
-app.get("/auth/twitch", passport.authenticate("twitch"));
-
-app.get(
-  "/auth/twitch/callback",
-  passport.authenticate("twitch", { failureRedirect: "/login" }),
-  function (req, res) {
-    res.redirect("localhost:3000");
-  }
-);
-
 app.get("/", (req, res) => {
   res.send("Hello World");
 });
 
 const host = "0.0.0.0";
-const port = process.env.PORT ? parseInt(process.env.PORT, 10) : 4000;
+// const port = process.env.PORT ? parseInt(process.env.PORT, 10) : 4000;
+const port = 4000;
 
 app.listen(port, host, () => {
   console.log("server started");
