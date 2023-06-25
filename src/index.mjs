@@ -5,6 +5,8 @@ import cors from "cors";
 import session from "express-session";
 import passport from "passport";
 
+import User from "./db-utils/user.js";
+
 import { Strategy as TwitchStrategy } from "twitch-passport";
 
 dotenv.config();
@@ -23,8 +25,8 @@ app.set("trust proxy", 1); // trust first proxy
 
 app.use(
   session({
-    // secret: process.env.EXPRESS_SESSION_SECRET,
-    secret: "secretcode",
+    secret: process.env.EXPRESS_SESSION_SECRET,
+    // secret: "secretcode",
     resave: true,
     saveUninitialized: true,
     cookie: {
@@ -68,9 +70,11 @@ passport.use(
 
         // if couldn't find the user
         if (!doc) {
+          console.log("THIS IS profile", profile);
+          console.log("============================================");
           const newUser = new User({
             twitchId: profile.id,
-            username: profile.login,
+            username: profile.userName,
           });
 
           await newUser.save();
@@ -113,10 +117,6 @@ app.get("/auth/logout", (req, res) => {
     });
     res.send("logout successful!");
   }
-});
-
-app.get("/test", (req, res) => {
-  res.send("TEST");
 });
 
 const host = "0.0.0.0";
